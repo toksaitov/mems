@@ -13,6 +13,10 @@
 1. Create an `.env`. Inside the file specify the following
 
 ```
+# Server Params
+MEMS_HOST=localhost # IP or hostname
+MEMS_PORT=8080      # Port to run the server on
+
 # DB Params
 
 DB_HOST=localhost # database location
