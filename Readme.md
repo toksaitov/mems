@@ -14,8 +14,9 @@
 
 ```
 # Server Params
-MEMS_HOST=localhost # IP or hostname
-MEMS_PORT=8080      # Port to run the server on
+MEMS_HOST=localhost    # IP or hostname
+MEMS_PORT=8080         # Port to run the server on
+MEMS_ADMIN_LOGIN=admin # Name of the administrator user
 
 # DB Params
 
