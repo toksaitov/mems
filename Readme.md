@@ -17,6 +17,8 @@
 MEMS_HOST=localhost    # IP or hostname
 MEMS_PORT=8080         # Port to run the server on
 MEMS_ADMIN_LOGIN=admin # Name of the administrator user
+MEMS_ADMIN_PASSWORD=?  # Password of the administrator user
+MEMS_SESSION_SECRET=?  # Session secret
 
 # DB Params
 
