@@ -18,7 +18,8 @@ const db = new Sequelize(
 export const User = db.define('user', {
     login: {
         type: Sequelize.DataTypes.STRING(64),
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     password: {
         type: Sequelize.DataTypes.STRING(256),
