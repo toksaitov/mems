@@ -43,6 +43,51 @@ function users(app, userModel) {
             })
         })
     })
+
+    app.post('/register', async (req, res) => {
+        const login = req.body.login.trim()
+        if (!login) {
+            return app.handleError(res, 400, "Login can't be empty")
+        }
+
+        let password = req.body.password.trim()
+        if (!password) {
+            return app.handleError(res, 400, "Password can't be empty")
+        }
+
+        const passwordRepeat = req.body.passwordRepeat.trim()
+        if (!passwordRepeat) {
+            return app.handleError(res, 400, "Repeated password can't be empty")
+        }
+
+        // TODO: check how strong the password is
+        
+        if (password !== passwordRepeat) {
+            return app.handleError(res, 400, "The password was not repeated correctly")
+        }
+
+        try {
+            let user = await userModel.findOne({ 'where': { login }})
+            if (user) {
+                return app.handleError(res, 400)
+            }
+
+            password = bcrypt.hashSync(password, 8)
+            user = await userModel.create({ login, password })
+
+            req.session.user = user
+
+            res.json({
+                user: {
+                    login: user.login,
+                    admin: false
+                }
+            })
+        } catch(error) {
+            console.error(error)
+            return res.status(503).end()
+        }
+    })
 }
 
 export default users
