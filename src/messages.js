@@ -50,48 +50,86 @@ function messages(app, messageModel, userModel) {
         }
     })
 
-    /*
+    app.post('/delete-message/:id', async (req, res) => {
+        if (!req.session.user) {
+            return app.handleError(res, 403, "Unauthorized users can't delete messages")
+        }
 
-    app.post('/delete-message/:id', (request, response) => {
-        const id = request.params.id
-        const userID = request.session.id
+        const id = req.params.id
+        if (!id) {
+            return app.handleError(res, 400, "ID of the message must be specified")
+        }
 
-        Message.destroy({ where: {
-            id, userID
-        }}).then(affectedRows => {
-            if (affectedRows === 0) {
-                return response.status(403).end()
+        try {
+            let affectedRows
+            if (req.session.user.admin) {
+                affectedRows = await messageModel.destroy({ where: { id }})
+            } else {
+                const userId = req.session.user.id
+                affectedRows = await messageModel.destroy({ where: { id, userId }})
             }
-            response.redirect('/')
-        }).catch(error => {
+
+            if (affectedRows === 0) {
+                return app.handleError(res, 403)
+            }
+
+            res.json({
+                message: null
+            })
+        } catch(error) {
             console.error(error)
-            return response.status(503).end()
-        })
+            return res.status(503).end()
+        }
     })
 
-    app.post('/edit-message/:id', (request, response) => {
-        const id = request.params.id
-        const userID = request.session.id
+    app.post('/edit-message/:id', async (req, res) => {
+        if (!req.session.user) {
+            return app.handleError(res, 403, "Unauthorized users can't edit messages")
+        }
 
-        const name = request.body.name
-        if (!validateName(name, request, response, `/edit-message/${id}`)) return
+        const id = req.params.id
+        if (!id) {
+            return app.handleError(res, 400, "ID of the message must be specified")
+        }
 
-        const content = request.body.content
-        if (!validateContent(content, request, response, `/edit-message/${id}`)) return
+        const content = req.body.content.trim()
+        if (!content) {
+            return app.handleError(res, 400, "Message can't be empty")
+        }
 
-        Message.update({ name, content }, { where: { id, userID }}).then(result => {
+        try {
+            const userId = req.session.user.id
+
+            let result
+            if (req.session.user.admin) {
+                result = await messageModel.update({ content }, { where: { id }})
+            } else {
+                result = await messageModel.update({ content }, { where: { id, userId }})
+            }
             const affectedRows = result[0]
-            if (affectedRows === 0) {
-                return response.status(403).end()
-            }
-            response.redirect('/')
-        }).catch(error => {
-            console.error(error)
-            return response.status(503).end()
-        })
-    })
 
-    */
+            if (affectedRows === 0) {
+                return app.handleError(res, 403)
+            }
+
+            const message = await messageModel.findOne({ where: { id } })
+
+            res.json({
+                message: {
+                    id: message.id,
+                    content: message.content,
+                    createdAt: message.createdAt,
+                    user: {
+                        id: userId,
+                        login: req.session.user.login
+                    }
+                }
+            })
+        } catch(error) {
+            console.error(error)
+            return res.status(503).end()
+        }
+    })
 }
 
 export default messages
