@@ -25,9 +25,20 @@ const host = process.env.MEMS_HOST || 'localhost'
 const port = process.env.MEMS_PORT || 8080
 
 users(app, User)
-messages(app, Message, User)
+messages(app, Message, User);
 
-dbStart()
-app.listen(port, () => {
-    console.log(`mems server is listening at http://${host}:${port}`)
-})
+(function loop() {
+    setTimeout(async () => {
+        try {
+            await dbStart()
+
+            app.listen(port, () => {
+                console.log(`mems server is listening at http://${host}:${port}`)
+            })
+        } catch(error) {
+            console.error(error)
+
+            loop()
+        }
+    }, 3000)
+})()
