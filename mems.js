@@ -1,44 +1,34 @@
-import express from 'express'
-import session from 'express-session'
-import dotenv from 'dotenv'
-
-import { User, Message, dbStart } from './src/db.js'
-import users from './src/users.js'
-import messages from './src/messages.js'
-
+import dotenv  from 'dotenv'
 dotenv.config()
 
-const app = express()
-app.use(express.static('public'))
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-app.use(session({
-    secret: process.env.MEMS_SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true
-}))
-app.handleError = (res, status, error = 'Something went wrong') => {
-    return res.status(status).json({ error })
-}
+import server   from './src/server.js'
+import database from './src/database.js'
+
+import sessionRoutes  from './src/routes/session.js'
+import usersRoutes    from './src/routes/users.js'
+import messagesRoutes from './src/routes/messages.js'
 
 const host = process.env.MEMS_HOST || 'localhost'
 const port = process.env.MEMS_PORT || 8080
+const restartDelay = parseInt(process.env.MEMS_RESTART_DELAY || '3')
 
-users(app, User)
-messages(app, Message, User);
+server.use('/session',  sessionRoutes)
+server.use('/users',    usersRoutes)
+server.use('/messages', messagesRoutes);
 
-(function loop() {
+(function start() {
     setTimeout(async () => {
         try {
-            await dbStart()
+            await database()
 
-            app.listen(port, () => {
+            server.listen(port, host, () => {
                 console.log(`mems server is listening at http://${host}:${port}`)
             })
-        } catch(error) {
+        } catch (error) {
             console.error(error)
+            console.log(`Something went wrong, trying to restart the server in ${restartDelay} seconds`)
 
-            loop()
+            start()
         }
-    }, 3000)
+    }, restartDelay * 1000)
 })()
