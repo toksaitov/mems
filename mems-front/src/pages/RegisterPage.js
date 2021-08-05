@@ -5,6 +5,8 @@ import {
 } from "react-router-dom"
 
 class RegisterPage extends React.Component {
+    #isMounted = false
+
     constructor(props) {
         super(props)
 
@@ -13,6 +15,14 @@ class RegisterPage extends React.Component {
             password: '',
             passwordRepeat: ''
         }
+    }
+
+    componentDidMount() {
+        this.#isMounted = true
+    }
+
+    componentWillUnmount() {
+        this.#isMounted = false
     }
 
     handleChange = event => {
@@ -26,10 +36,6 @@ class RegisterPage extends React.Component {
         event.preventDefault()
 
         try {
-            console.log(this.state.login)
-            console.log(this.state.password)
-            console.log(this.state.passwordRepeat)
-
             const response = await fetch('/users', {
                 method: 'POST',
                 headers: {
@@ -47,11 +53,13 @@ class RegisterPage extends React.Component {
                 this.props.handleLogin(data.user)
             }
 
-            this.setState({
-                login: '',
-                password: '',
-                passwordRepeat: ''
-            })
+            if (this.#isMounted) {
+                this.setState({
+                    login: '',
+                    password: '',
+                    passwordRepeat: ''
+                })
+            }
         } catch (error) {
             console.error(error)
         }
@@ -63,13 +71,13 @@ class RegisterPage extends React.Component {
                 <Redirect to="/" />
                 :
                 <main>
-                    <form onSubmit={this.handleSubmit} autocomplete="off">
+                    <form onSubmit={this.handleSubmit} autoComplete="off">
                         <label htmlFor="login">Login</label><br />
-                        <input type="text" id="login" name="login" onChange={this.handleChange} value={this.state.login} autocomplete="off" /><br />
+                        <input type="text" id="login" name="login" onChange={this.handleChange} value={this.state.login} autoComplete="off" /><br />
                         <label htmlFor="password">Password</label><br />
-                        <input type="password" id="password" name="password" onChange={this.handleChange} value={this.state.password} autocomplete="new-password" /><br />
+                        <input type="password" id="password" name="password" onChange={this.handleChange} value={this.state.password} autoComplete="new-password" /><br />
                         <label htmlFor="passwordRepeat">Repeat Password</label><br />
-                        <input type="password" id="passwordRepeat" name="passwordRepeat" onChange={this.handleChange} value={this.state.passwordRepeat} autocomplete="new-password" /><br />
+                        <input type="password" id="passwordRepeat" name="passwordRepeat" onChange={this.handleChange} value={this.state.passwordRepeat} autoComplete="new-password" /><br />
                         <input type="submit" value="Register" />
                     </form>
                 </main>

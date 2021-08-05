@@ -100,10 +100,7 @@ router.delete('/:id', async (req, res) => {
     }
 
     const admin = req.session.user.admin
-    if (!admin) {
-        return res.status(503).json({ error: 'Internal data inconsistency' })
-    }
-
+    
     try {
         const affectedRows = await Message.destroy(
             admin ? { where: { id } } : { where: { id, userId }}

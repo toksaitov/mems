@@ -5,11 +5,10 @@ function Header({ user, handleLogin }) {
         event.preventDefault()
 
         try {
-            const response = await fetch('/session', {
-                method: 'DELETE'
-            })
-
-            handleLogin(null)
+            const response = await fetch('/session', { method: 'DELETE' })
+            if (response.status === 204) {
+                handleLogin(null)
+            }
         } catch (error) {
             console.error(error)
         }

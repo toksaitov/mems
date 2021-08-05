@@ -5,6 +5,8 @@ import {
 } from "react-router-dom"
 
 class LoginPage extends React.Component {
+    #isMounted = false
+
     constructor(props) {
         super(props)
 
@@ -12,6 +14,14 @@ class LoginPage extends React.Component {
             login: '',
             password: ''
         }
+    }
+
+    componentDidMount() {
+        this.#isMounted = true
+    }
+
+    componentWillUnmount() {
+        this.#isMounted = false
     }
 
     handleChange = event => {
@@ -41,10 +51,12 @@ class LoginPage extends React.Component {
                 this.props.handleLogin(data.user)
             }
 
-            this.setState({
-                login: '',
-                password: ''
-            })
+            if (this.#isMounted) {
+                this.setState({
+                    login: '',
+                    password: ''
+                })
+            }
         } catch (error) {
             console.error(error)
         }
