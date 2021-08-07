@@ -12,8 +12,6 @@ import MainPage from './pages/MainPage.js'
 import LoginPage from './pages/LoginPage.js'
 import RegisterPage from './pages/RegisterPage.js'
 
-import './App.css'
-
 class App extends React.Component {
     constructor(props) {
         super(props)

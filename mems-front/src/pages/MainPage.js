@@ -131,40 +131,56 @@ class MainPage extends React.Component {
     render() {
         const user = this.props.user
         return (
-            <>
+            <main className="container">
                 {user &&
-                    <form onSubmit={this.handleMessageSubmit}>
-                        <label htmlFor="message">What’s on your mind?</label><br />
-                        <input type="text" name="content" id="message" onChange={this.handleChange} value={this.state.content} />
-                        <input type="submit" value="Buzz" />
-                    </form>
+                    <div className="row justify-content-center">
+                        <div className="col-6 px-5 mt-4">
+                            <form onSubmit={this.handleMessageSubmit}>
+                                <label htmlFor="message" className="text-secondary font-weight-bold">What’s on your mind?</label>
+                                <div className="input-group mb-3">
+                                    <input type="text" name="content" id="message" onChange={this.handleChange} value={this.state.content} className="form-control text-white border-secondary bg-secondary" />
+                                    <div className="input-group-append">
+                                        <input type="submit" value="Buzz" className="btn btn-secondary text-white font-weight-bold" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 }
-                <main>{
+                <>
+                {
                     this.state.messages.map(message => {
                         const showEditDelete = user && (user.admin || user.login === message.user.login)
 
-                        return <div key={message.id}>
-                            <p><strong>{message.user.login}</strong></p>
-                            {message.isBeingEdited ?
-                                <><input type="text" name={message.id} onChange={this.handleMessageChange} value={message.content} /><br /></>
-                                :
-                                <p>{message.content}</p>
-                            }
-                            <Moment format="l">{message.createdAt}</Moment>
-                            {showEditDelete &&
-                                <>
-                                    <form onSubmit={event => { this.handleEditSaveSubmit(event, message.id) }}>
-                                        <input type="submit" value={message.isBeingEdited ? 'Save' : 'Edit' } />
-                                    </form>
-                                    <form onSubmit={event => { this.handleDeleteCancelSubmit(event, message.id) }}>
-                                        <input type="submit" value={message.isBeingEdited ? 'Cancel' : 'Delete' }  />
-                                    </form>
-                                </>
-                            }
+                        return <div key={message.id} className="row justify-content-center">
+                            <div className="card p-3 m-2 text-white bg-secondary w-25">
+                                <h5 className="card-title text-white">{message.user.login}</h5>
+                                {message.isBeingEdited ?
+                                    <><input type="text" name={message.id} onChange={this.handleMessageChange} value={message.content} className="form-control text-white border-secondary bg-secondary" /><br /></>
+                                    :
+                                    <p className="text-white">{message.content}</p>
+                                }
+                                <small>
+                                    <Moment className="card-subtitle text-white" format="l">{message.createdAt}</Moment>
+                                </small>
+                                {showEditDelete &&
+                                    <div className="clearfix">
+                                        <div className="float-right">
+                                            <form className="d-inline" onSubmit={event => { this.handleEditSaveSubmit(event, message.id) }}>
+                                                <input className="btn btn-sm btn-outline-light" type="submit" value={message.isBeingEdited ? 'Save' : 'Edit' } />
+                                            </form>
+                                            <form className="d-inline ml-1" onSubmit={event => { this.handleDeleteCancelSubmit(event, message.id) }}>
+                                                <input className="btn btn-sm btn-outline-light" type="submit" value={message.isBeingEdited ? 'Cancel' : 'Delete' }  />
+                                            </form>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
                         </div>
                     })
-                }</main>
-            </>
+                }
+                </>
+            </main>
         )
     }
 }
