@@ -1,10 +1,10 @@
 {
   "name": "mems",
-  "version": "0.1.0",
-  "description": "mems is a simple Twitter clone.",
-  "main": "mems.js",
+  "version": "0.0.1",
+  "description": "Mems is a simple Twitter clone.",
+  "main": "index.js",
   "scripts": {
-    "start": "node mems.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -14,9 +14,9 @@
   "keywords": [
     "Twitter",
     "clone",
-    "Express"
+    "express"
   ],
-  "author": "Dmitrii Toksaitov <dmitrii@toksaitov.com>",
+  "author": "Toksaitov Dmitrii Alexandrovich <dmitrii@toksaitov.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/toksaitov/mems/issues"
@@ -25,14 +25,14 @@
   "type": "module",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "connect-redis": "^6.0.0",
-    "dotenv": "^10.0.0",
+    "connect-redis": "^4.0.4",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.0.1",
     "express": "^4.17.1",
-    "express-session": "^1.17.2",
-    "ioredis": "^4.27.6",
-    "mysql2": "^2.2.5",
-    "redis": "^3.1.2",
-    "sequelize": "^6.6.5",
-    "validator": "^13.6.0"
+    "express-session": "^1.17.0",
+    "moment": "^2.24.0",
+    "mysql2": "^2.1.0",
+    "redis": "^3.0.2",
+    "sequelize": "^5.21.4"
   }
 }

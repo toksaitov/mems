@@ -1,62 +1,43 @@
-import React from 'react'
-
+import React from 'react';
+import { connect } from 'react-redux';
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route
-} from 'react-router-dom'
+    BrowserRouter as Router,
+    Switch,
+    Route
+} from "react-router-dom";
 
-import Header from './components/Header.js'
+import { loadUser } from './actions/user.js';
 
-import MainPage from './pages/MainPage.js'
-import LoginPage from './pages/LoginPage.js'
-import RegisterPage from './pages/RegisterPage.js'
+import LoginPage from './pages/LoginPage.js';
+import RegisterPage from './pages/RegisterPage.js';
+import HomePage from './pages/HomePage.js';
 
 class App extends React.Component {
-    constructor(props) {
-        super(props)
-
-        this.state = {
-            user: null
-        }
+    componentDidMount() {
+        this.props.loadUser();
     }
 
-    async componentDidMount() {
-        try {
-            const response = await fetch('/session')
-            const data = await response.json()
-            if (data.user) {
-                this.setState({
-                    user: data.user
-                })
-            }
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
-    handleLogin = user => {
-        this.setState({ user })
-    }
-
-    render() {
-        return (
-            <Router>
-                <Switch>
-                    <Route exact path="/">
-                        <Header user={this.state.user} handleLogin={this.handleLogin} />
-                        <MainPage user={this.state.user} />
-                    </Route>
-                    <Route path="/login">
-                        <LoginPage user={this.state.user} handleLogin={this.handleLogin} />
-                    </Route>
-                    <Route path="/register">
-                        <RegisterPage user={this.state.user} handleLogin={this.handleLogin} />
-                    </Route>
-                </Switch>
-            </Router>
-        )
-    }
+    render = () =>
+        <Router>
+            <Switch>
+                <Route path="/login">
+                    <LoginPage />
+                </Route>
+                <Route path="/register">
+                    <RegisterPage />
+                </Route>
+                <Route path="/">
+                    <HomePage />
+                </Route>
+            </Switch>
+        </Router>
 }
 
-export default App
+const mapDispatchToProps = dispatch => ({
+    'loadUser': () => dispatch(loadUser())
+});
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(App);

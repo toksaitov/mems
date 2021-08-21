@@ -1,38 +1,16 @@
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-function Header({ user, handleLogin }) {
-    const onSubmit = async event => {
-        event.preventDefault()
+import UserToolbar from '../containers/UserToolbar.js';
 
-        try {
-            const response = await fetch('/session', { method: 'DELETE' })
-            if (response.status === 204) {
-                handleLogin(null)
-            }
-        } catch (error) {
-            console.error(error)
-        }
-    }
+const Header = ({ showUserToolbar }) =>
+    <header>
+        <nav className="navbar navbar-dark bg-primary">
+            <Link className="navbar-brand" to="/">
+                <h1>Mems</h1>
+            </Link>
+            {showUserToolbar && <UserToolbar />}
+        </nav>
+    </header>;
 
-    return (
-        <header>
-            <nav className="navbar navbar-dark bg-primary">
-                <Link className="navbar-brand" to="/">
-                    <h1>mems</h1>
-                </Link>
-                {!user ?
-                    <div className="btn-group">
-                        <Link className="btn btn-outline-light" to="/login">Login</Link>
-                        <Link className="btn btn-outline-light" to="/register">Register</Link>
-                    </div>
-                    :
-                    <form onSubmit={onSubmit}>
-                        <input className="btn btn-outline-light" type="submit" value={`Logout @${user.login}`} />
-                    </form>
-                }
-            </nav>
-        </header>
-    )
-}
-
-export default Header
+export default Header;
